@@ -49,22 +49,61 @@ def Line(iX, iZ, fX, fZ, color=[1,1,1], log=False):
     if(dX == 0 or dZ == 0):
         glVertex3f(iX, 0, iZ)
         glVertex3f(fX, 0, fZ)
-        glEnd()
-        return
-
-    m_new = 2 * dZ
-    slope_error_new = m_new - dX
-    z = iZ
-    for x in range(iX, fX+1):
-        if log: print("(", x, ",", z, ")")
-        glVertex3f(x, 0, z)
-        if(x != iX and x != fX):
-            glVertex3f(x, 0, z)
-        slope_error_new = slope_error_new + m_new
-        if (slope_error_new >= 0):
-            z = z+1
-            slope_error_new = slope_error_new - 2 * dX
+    else:
+        points = bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ)
+            
+        for i in range(dX):
+            if log: print("(",points[i][0],",",points[i][1],")")
+            glVertex3f(points[i][0], 0, points[i][1])
+            glVertex3f(points[i+1][0], 0, points[i+1][1])
+        
+        if log: print("(",points[-1][0],",",points[-1][1],")")
+    
     glEnd()
+    if log: print()
+
+def bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ):
+    dX = fX - iX
+    dZ = fZ - iZ
+
+    # Determine how steep the line is
+    is_steep = abs(dZ) > abs(dX)
+
+    # Rotate line
+    if is_steep:
+        iX, iZ = iZ, iX
+        fX, fZ = fZ, fX
+
+    # Swap start and end points if necessary and store swap state
+    swapped = False
+    if iX > fX:
+        iX, fX = fX, iX
+        iZ, fZ = fZ, iZ
+        swapped = True
+
+    # Recalculate differentials
+    dX = fX - iX
+    dZ = fZ - iZ
+
+    # Calculate error
+    error = int(dX / 2.0)
+    ystep = 1 if iZ < fZ else -1
+
+    # Iterate over bounding box generating points between start and end
+    y = iZ
+    points = []
+    for x in range(iX, fX + 1):
+        coord = (y, x) if is_steep else (x, y)
+        points.append(coord)
+        error -= abs(dZ)
+        if error < 0:
+            y += ystep
+            error += dX
+
+    # Reverse the list if the coordinates were swapped
+    if swapped:
+        points.reverse()
+    return points
 
 def main():
     pygame.init()
@@ -107,6 +146,7 @@ def main():
         if keys[pygame.K_DOWN]:
             glRotatef(1, -1, 0, 0)
 
+        
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         Line(0,0,2,0, [1,0,0]) #X (vermelho)
         Line(0,0,0,2, [0,1,0]) #Z (verde)
@@ -117,7 +157,7 @@ def main():
         Line(1,0,0,0)
 
         Line(0,0,1,1, [1,1,0])
-        Line(1,0,0,1, [0,1,0], log=True)
+        Line(0,1,1,0, [1,1,0])
         pygame.display.flip()
         pygame.time.wait(10)
 
