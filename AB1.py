@@ -104,44 +104,93 @@ def bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ):
         points.reverse()
     return points
 
+def Circle(cX, cZ, r, nOct, octIni, color=[1,1,1], log=False):
+    x = 0
+    z = r
+    d = 3 - (2*r)
+
+    activeOctants = [(octIni+i) % 8 for i in range(nOct)]
+    octantPoints = {i: list() for i in activeOctants}
+
+    octantPoints = addOctantPoints(cX, cZ, x, z, octantPoints, activeOctants)
+    while(x <= z):
+        if(d > 0):
+            z-=1
+            d = d + (4 * x) - (4 * z) + 10
+        else:
+            d = d + (4 * x) + 6
+        x+=1
+        octantPoints = addOctantPoints(cX, cZ, x, z, octantPoints, activeOctants)
+    
+    for octant in activeOctants:
+        points = octantPoints[octant]
+
+        glBegin(GL_LINES)
+        glColor(color)
+        for p in range(len(points)-1):
+            glVertex3f(points[p][0], 0, points[p][1])
+            glVertex3f(points[p+1][0], 0, points[p+1][1])
+        glEnd()
+
+def addOctantPoints(cX, cZ, x, z, octantPoints, activeOctants):
+    if 0 in activeOctants: octantPoints[0].append([cX+x, cZ-z]) #0
+    if 1 in activeOctants: octantPoints[1].append([cX+z, cZ-x]) #1
+    if 2 in activeOctants: octantPoints[2].append([cX+z, cZ+x]) #2
+    if 3 in activeOctants: octantPoints[3].append([cX+x, cZ+z]) #3
+    if 4 in activeOctants: octantPoints[4].append([cX-x, cZ+z]) #4
+    if 5 in activeOctants: octantPoints[5].append([cX-z, cZ+x]) #5
+    if 6 in activeOctants: octantPoints[6].append([cX-z, cZ-x]) #6
+    if 7 in activeOctants: octantPoints[7].append([cX-x, cZ-z]) #7
+    return octantPoints
+
 def Campo():
     #Limite Maior
-    Line(0,0,0,105)
-    Line(0,105,68,105)
-    Line(68,105,68,0)
-    Line(68,0,0,0)
+    Line(0,0,0,10500)
+    Line(0,10500,6800,10500)
+    Line(6800,10500,6800,0)
+    Line(6800,0,0,0)
 
     #Meio Campo
-    Line(0,52.5,68,52.5)
+    Line(0,5250,6800,5250)
+    Circle(3400, 5250, 900, 8, 0)
     
     #Grande Área Superior
-    Line(14,0,14,17)
-    Line(54,0,54,17)
-    Line(14,17,54,17)
+    Circle(3400, 1700, 600, 4, 2)
+    Line(1400,0,1400,1700)
+    Line(5400,0,5400,1700)
+    Line(1400,1700,5400,1700)
 
     #Pequena Área Superior
-    Line(25,0,25,6)
-    Line(43,0,43,6)
-    Line(25,6,43,6)
+    Line(2500,0,2500,600)
+    Line(4300,0,4300,600)
+    Line(2500,600,4300,600)
 
     #Grande Área Inferior
-    Line(14,105,14,88)
-    Line(54,105,54,88)
-    Line(14,88,54,88)
+    Circle(3400, 8800, 600, 4, 6)
+    Line(1400,10500,1400,8800)
+    Line(5400,10500,5400,8800)
+    Line(1400,8800,5400,8800)
 
     #Pequena Área Inferior
-    Line(25,105,25,99)
-    Line(43,105,43,99)
-    Line(25,99,43,99)
+    Line(2500,10500,2500,9900)
+    Line(4300,10500,4300,9900)
+    Line(2500,9900,4300,9900)
+
+    #Escanteios
+    Circle(0, 0, 300, 2, 2)
+    Circle(0, 10500, 300, 2, 0)
+    Circle(6800, 0, 300, 2, 4)
+    Circle(6800, 10500, 300, 2, 6)
+
 
 def main():
     pygame.init()
     display = (800,600)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-    gluPerspective(45, (display[0]/display[1]), 0.01, 200.0)
+    gluPerspective(45, (display[0]/display[1]), 500, 30000)
 
-    glTranslatef(-35, 53, -150)
+    glTranslatef(-3400, 5250, -15000)
     glRotatef(90, 1, 0, 0)
 
     while True:
@@ -153,17 +202,17 @@ def main():
         mX, mY, mZ = 0, 0, 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
-            mX += 0.1
+            mX += 100
         if keys[pygame.K_d]:
-            mX -= 0.1
+            mX -= 100
         if keys[pygame.K_e]:
-            mY -= 0.1
+            mY -= 100
         if keys[pygame.K_q]:
-            mY += 0.1   
+            mY += 100  
         if keys[pygame.K_w]:
-            mZ -= 0.1
+            mZ -= 100
         if keys[pygame.K_s]:
-            mZ += 0.1
+            mZ += 100
         glTranslatef(mX, mY, mZ)
 
         if keys[pygame.K_RIGHT]:
@@ -177,7 +226,7 @@ def main():
 
         
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        glLineWidth(3)
+        glLineWidth(1)
         Campo()
 
         pygame.display.flip()
