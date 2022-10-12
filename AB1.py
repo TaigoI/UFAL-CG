@@ -1,21 +1,27 @@
 import pygame
+from OpenGL.raw.GLUT import glutPostRedisplay
 from pygame.locals import *
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
 
-verticies = (
-    (1, -1, -1),
-    (1, 1, -1),
-    (-1, 1, -1),
-    (-1, -1, -1),
-    (1, -1, 1),
-    (1, 1, 1),
-    (-1, -1, 1),
-    (-1, 1, 1)
-    )
 
+verticies = (
+    (3900,50,-20),
+    (3900, 400, 60),
+    (2900, 400, 60),
+    (2900, 50, -20),
+    (3900, 50, 200),
+    (3900, 400, 200),
+    (2900, 50, 200), #7
+    (2900, 400, 200),
+
+    #(4000,-300,-3000),
+    #(4000,300,-3000),
+    #(3000, 300, -3000),
+    #(3000, -300, -3000),
+)
 edges = (
     (0,1),
     (0,3),
@@ -31,8 +37,23 @@ edges = (
     (5,7)
     )
 
+def Bola():
+    keys = pygame.key.get_pressed()
+    mX, mY, mZ = 0, 0, 0
+    if keys[pygame.K_j]:
+        mX -= 100
+    if keys[pygame.K_l]:
+        mX += 100
+    if keys[pygame.K_i]:
+        mZ -= 100
+    if keys[pygame.K_k]:
+        mZ += 100
+    glTranslatef(mX, mY, mZ)
+    glColor3f(1, 1, 1)
+    quad = gluNewQuadric()
+    gluSphere(quad, 70, 150, 30)
 
-def Cube():
+def TraveInferior():
     glBegin(GL_LINES)
     for edge in edges:
         for vertex in edge:
@@ -153,7 +174,7 @@ def Campo():
     #Meio Campo
     Line(0,5250,6800,5250)
     Circle(3400, 5250, 900, 8, 0)
-    
+    Bola()
     #Grande Área Superior
     Circle(3400, 1700, 600, 4, 2)
     Line(1400,0,1400,1700)
@@ -175,12 +196,15 @@ def Campo():
     Line(2500,10500,2500,9900)
     Line(4300,10500,4300,9900)
     Line(2500,9900,4300,9900)
-
+    #Line(3000,12,32,0)
+    #Line(3900,12,32,4444)
+    TraveInferior()
     #Escanteios
     Circle(0, 0, 300, 2, 2)
     Circle(0, 10500, 300, 2, 0)
     Circle(6800, 0, 300, 2, 4)
     Circle(6800, 10500, 300, 2, 6)
+
 
 
 def main():
@@ -227,8 +251,8 @@ def main():
         
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         glLineWidth(1)
-        Campo()
 
+        Campo()
         pygame.display.flip()
         pygame.time.wait(10)
 
