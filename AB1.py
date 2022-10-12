@@ -7,21 +7,28 @@ from OpenGL.GLU import *
 
 
 
-verticies = (
+verticiesSuperior = (
     (3900,50,-20),
     (3900, 400, 60),
     (2900, 400, 60),
     (2900, 50, -20),
     (3900, 50, 200),
     (3900, 400, 200),
-    (2900, 50, 200), #7
+    (2900, 50, 200),
     (2900, 400, 200),
-
-    #(4000,-300,-3000),
-    #(4000,300,-3000),
-    #(3000, 300, -3000),
-    #(3000, -300, -3000),
 )
+
+verticiesInferior = (
+    (3900,50,10500), #1
+    (3900, 400, 10400), #2
+    (2900, 400, 10400),#3
+    (2900, 50, 10500),#4
+    (3900, 50, 10300),#5
+    (3900, 400, 10300),#6
+    (2900, 50, 10300),#7
+    (2900, 400, 10300),#8
+)
+
 edges = (
     (0,1),
     (0,3),
@@ -36,6 +43,28 @@ edges = (
     (5,4),
     (5,7)
     )
+
+def Line(iX, iZ, fX, fZ, color=[1,1,1], log=False):
+    glBegin(GL_LINES)
+    glColor(color)
+
+    dX = abs(fX - iX)
+    dZ = abs(fZ - iZ)
+    if(dX == 0 or dZ == 0):
+        glVertex3f(iX, 0, iZ)
+        glVertex3f(fX, 0, fZ)
+    else:
+        points = bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ)
+
+        for i in range(dX):
+            if log: print("(",points[i][0],",",points[i][1],")")
+            glVertex3f(points[i][0], 0, points[i][1])
+            glVertex3f(points[i+1][0], 0, points[i+1][1])
+
+        if log: print("(",points[-1][0],",",points[-1][1],")")
+
+    glEnd()
+    if log: print()
 
 def Bola():
     keys = pygame.key.get_pressed()
@@ -53,34 +82,22 @@ def Bola():
     quad = gluNewQuadric()
     gluSphere(quad, 70, 150, 30)
 
+def TraveSuperior():
+    glBegin(GL_LINES)
+    for edge in edges:
+        for vertex in edge:
+            glVertex3fv(verticiesSuperior[vertex])
+    glEnd()
+
+
 def TraveInferior():
     glBegin(GL_LINES)
     for edge in edges:
         for vertex in edge:
-            glVertex3fv(verticies[vertex])
+            glVertex3fv(verticiesInferior[vertex])
     glEnd()
 
-def Line(iX, iZ, fX, fZ, color=[1,1,1], log=False):
-    glBegin(GL_LINES)
-    glColor(color)
-    
-    dX = abs(fX - iX)
-    dZ = abs(fZ - iZ)
-    if(dX == 0 or dZ == 0):
-        glVertex3f(iX, 0, iZ)
-        glVertex3f(fX, 0, fZ)
-    else:
-        points = bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ)
-            
-        for i in range(dX):
-            if log: print("(",points[i][0],",",points[i][1],")")
-            glVertex3f(points[i][0], 0, points[i][1])
-            glVertex3f(points[i+1][0], 0, points[i+1][1])
-        
-        if log: print("(",points[-1][0],",",points[-1][1],")")
-    
-    glEnd()
-    if log: print()
+
 
 def bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ):
     dX = fX - iX
@@ -185,7 +202,7 @@ def Campo():
     Line(2500,0,2500,600)
     Line(4300,0,4300,600)
     Line(2500,600,4300,600)
-
+    TraveInferior()
     #Grande Área Inferior
     Circle(3400, 8800, 600, 4, 6)
     Line(1400,10500,1400,8800)
@@ -198,7 +215,7 @@ def Campo():
     Line(2500,9900,4300,9900)
     #Line(3000,12,32,0)
     #Line(3900,12,32,4444)
-    TraveInferior()
+    TraveSuperior()
     #Escanteios
     Circle(0, 0, 300, 2, 2)
     Circle(0, 10500, 300, 2, 0)
