@@ -6,29 +6,30 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-cameraAngle = 90
-bX, bY, bZ = 3400, 350, 5250
+cYaw, cRoll, cPitch = 90, 0, 0
+bX, bY, bZ = 3400, 70, 5250
+pRed, pBlue = 0, 0
 
 verticiesSuperior = (
-    (3900,   0,   0),
-    (3900, 400, 100),
-    (2900, 400, 100),
-    (2900,   0,   0),
-    (3900,   0, 200),
-    (3900, 400, 200),
-    (2900,   0, 200),
-    (2900, 400, 200),
+    (3900,   0, -200),
+    (3900, 400, -100),
+    (2900, 400, -100),
+    (2900,   0, -200),
+    (3900,   0,    0),
+    (3900, 400,    0),
+    (2900,   0,    0),
+    (2900, 400,    0),
 )
 
 verticiesInferior = (
-    (3900,   0, 10500),  # 1
-    (3900, 400, 10400),  # 2
-    (2900, 400, 10400),  # 3
-    (2900,   0, 10500),  # 4
-    (3900,   0, 10300),  # 5
-    (3900, 400, 10300),  # 6
-    (2900,   0, 10300),  # 7
-    (2900, 400, 10300),  # 8
+    (3900,   0, 10700),  # 1
+    (3900, 400, 10600),  # 2
+    (2900, 400, 10600),  # 3
+    (2900,   0, 10700),  # 4
+    (3900,   0, 10500),  # 5
+    (3900, 400, 10500),  # 6
+    (2900,   0, 10500),  # 7
+    (2900, 400, 10500),  # 8
 )
 
 edges = (
@@ -74,15 +75,27 @@ def Line(iX, iZ, fX, fZ, color=[1, 1, 1], log=False):
 
 
 def Bola():
+    global bX, bY, bZ, pRed, pBlue
+
     glPushMatrix()
     glColor3f(1, 1, 1)
     glTranslatef(bX, bY, bZ)
+
+    if (bX >= 2900 and bX <= 3900):
+        if (bZ >= -200 and bZ <= 0):
+            pBlue += 1
+            bX, bZ = 3400, 5250
+        elif (bZ >= 10500 and bZ <= 10700):
+            pRed += 1
+            bX, bZ = 3400, 5250
+
     gluSphere(gluNewQuadric(), 140, 100, 30)
     glPopMatrix()
 
 
 def TraveSuperior():
     glBegin(GL_LINES)
+    glColor3f(1, 0, 0)
     for edge in edges:
         for vertex in edge:
             glVertex3fv(verticiesSuperior[vertex])
@@ -91,6 +104,7 @@ def TraveSuperior():
 
 def TraveInferior():
     glBegin(GL_LINES)
+    glColor3f(0, 0, 1)
     for edge in edges:
         for vertex in edge:
             glVertex3fv(verticiesInferior[vertex])
@@ -236,8 +250,8 @@ def Campo():
 
 
 def move(direction):
-    global cameraAngle
-    angle = copy.deepcopy(cameraAngle)
+    global cYaw
+    angle = copy.deepcopy(cYaw)
     distance = 150
 
     if (direction == "S"):
@@ -254,9 +268,9 @@ def move(direction):
 
 
 def moveBall(direction):
-    global bX, bY, bZ, cameraAngle
+    global bX, bY, bZ, cYaw
 
-    if (cameraAngle > 45 and cameraAngle <= 135):
+    if (cYaw > 45 and cYaw <= 135):
         if (direction == "N"):
             bZ = between(bZ - 75, -200, 10700)
         elif (direction == "S"):
@@ -265,7 +279,7 @@ def moveBall(direction):
             bX = between(bX + 75, -200, 7000)
         elif (direction == "O"):
             bX = between(bX - 75, -200, 7000)
-    elif (cameraAngle > 135 and cameraAngle <= 225):
+    elif (cYaw > 135 and cYaw <= 225):
         if (direction == "N"):
             bX = between(bX + 75, -200, 7000)
         elif (direction == "S"):
@@ -274,7 +288,7 @@ def moveBall(direction):
             bZ = between(bZ + 75, -200, 10700)
         elif (direction == "O"):
             bZ = between(bZ - 75, -200, 10700)
-    elif (cameraAngle > 225 and cameraAngle <= 315):
+    elif (cYaw > 225 and cYaw <= 315):
         if (direction == "N"):
             bZ = between(bZ + 75, -200, 10700)
         elif (direction == "S"):
@@ -283,7 +297,7 @@ def moveBall(direction):
             bX = between(bX - 75, -200, 7000)
         elif (direction == "O"):
             bX = between(bX + 75, -200, 7000)
-    elif (cameraAngle > 315 or cameraAngle <= 45):
+    elif (cYaw > 315 or cYaw <= 45):
         if (direction == "N"):
             bX = between(bX - 75, -200, 7000)
         elif (direction == "S"):
@@ -295,9 +309,21 @@ def moveBall(direction):
 
 
 def yaw(rate):
-    global cameraAngle
-    cameraAngle += rate
+    global cYaw
+    cYaw = (cYaw + rate) % 360
     glRotatef(1,  0,  rate, 0)
+
+
+def pitch(rate):
+    global cPitch
+    cPitch = (cPitch + rate) % 360
+    glRotatef(1,  rate,  0, 0)
+
+
+def roll(rate):
+    global cRoll
+    cRoll = (cRoll + rate) % 360
+    glRotatef(1,  0,  0, rate)
 
 
 def between(point, minP, maxP):
@@ -312,17 +338,17 @@ def handleInput(keys):
     global bX, bY, bZ
 
     if keys[pygame.K_i]:
-        glRotatef(1,  1,  0,  0)
+        pitch(1)
     if keys[pygame.K_k]:
-        glRotatef(1, -1,  0,  0)
+        pitch(-1)
     if keys[pygame.K_j]:
         yaw(1)
     if keys[pygame.K_l]:
         yaw(-1)
     if keys[pygame.K_u]:
-        glRotatef(1,  0,  0,  1)
+        roll(1)
     if keys[pygame.K_o]:
-        glRotatef(1,  0,  0, -1)
+        roll(-1)
 
     if keys[pygame.K_s]:
         move("S")
@@ -341,6 +367,16 @@ def handleInput(keys):
         moveBall("N")
     if keys[pygame.K_DOWN]:
         moveBall("S")
+
+
+def drawText(position, textString, size=24):
+    font = pygame.font.Font(None, size)
+    textSurface = font.render(
+        textString, True, (255, 255, 255, 255), (0, 0, 0, 255))
+    textData = pygame.image.tostring(textSurface, "RGBA", True)
+    glRasterPos3d(*position)
+    glDrawPixels(textSurface.get_width(), textSurface.get_height(),
+                 GL_RGBA, GL_UNSIGNED_BYTE, textData)
 
 
 def main():
@@ -367,6 +403,12 @@ def main():
 
         Campo()
         Bola()
+        drawText((-100, 2500, -100),
+                 f"Roll: {cRoll}, Pitch: {cPitch}, Yaw: {cYaw}", 16)
+        drawText((-100, 1500, -100),
+                 f"bX: {bX}, bZ: {bZ}", 16)
+        drawText((1700, 3000, -500),
+                 f"VER {pRed}x{pBlue} AZL", 24)
 
         pygame.display.flip()
         pygame.time.wait(10)
