@@ -7,7 +7,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 cYaw, cRoll, cPitch = 90, 0, 0
-bX, bY, bZ = 3400, 70, 5250
+bX, bY, bZ = 3400, 40, 5250
 pRed, pBlue = 0, 0
 
 verticiesSuperior = (
@@ -89,7 +89,7 @@ def Bola():
             pRed += 1
             bX, bZ = 3400, 5250
 
-    gluSphere(gluNewQuadric(), 140, 100, 30)
+    gluSphere(gluNewQuadric(), 70, 100, 30)
     glPopMatrix()
 
 
