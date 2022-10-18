@@ -6,7 +6,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-cYaw, cRoll, cPitch = 90, 0, 0
+cYaw, cRoll, cPitch = 0, 0, 90
 bX, bY, bZ = 3400, 40, 5250
 pRed, pBlue = 0, 0
 
@@ -48,32 +48,6 @@ edges = (
 )
 
 
-def Line(iX, iZ, fX, fZ, color=[1, 1, 1], log=False):
-    glBegin(GL_LINES)
-    glColor(color)
-
-    dX = abs(fX - iX)
-    dZ = abs(fZ - iZ)
-    if (dX == 0 or dZ == 0):
-        glVertex3f(iX, 0, iZ)
-        glVertex3f(fX, 0, fZ)
-    else:
-        points = bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ)
-
-        for i in range(dX):
-            if log:
-                print("(", points[i][0], ",", points[i][1], ")")
-            glVertex3f(points[i][0], 0, points[i][1])
-            glVertex3f(points[i+1][0], 0, points[i+1][1])
-
-        if log:
-            print("(", points[-1][0], ",", points[-1][1], ")")
-
-    glEnd()
-    if log:
-        print()
-
-
 def Bola():
     global bX, bY, bZ, pRed, pBlue
 
@@ -109,6 +83,34 @@ def TraveInferior():
         for vertex in edge:
             glVertex3fv(verticiesInferior[vertex])
     glEnd()
+
+
+# Fonte: adaptado do RogueBasin
+# http://www.roguebasin.com/index.php/Bresenham%27s_Line_Algorithm#Python
+def Line(iX, iZ, fX, fZ, color=[1, 1, 1], log=False):
+    glBegin(GL_LINES)
+    glColor(color)
+
+    dX = abs(fX - iX)
+    dZ = abs(fZ - iZ)
+    if (dX == 0 or dZ == 0):
+        glVertex3f(iX, 0, iZ)
+        glVertex3f(fX, 0, fZ)
+    else:
+        points = bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ)
+
+        for i in range(dX):
+            if log:
+                print("(", points[i][0], ",", points[i][1], ")")
+            glVertex3f(points[i][0], 0, points[i][1])
+            glVertex3f(points[i+1][0], 0, points[i+1][1])
+
+        if log:
+            print("(", points[-1][0], ",", points[-1][1], ")")
+
+    glEnd()
+    if log:
+        print()
 
 
 def bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ):
@@ -155,6 +157,8 @@ def bresenhamLinePoints(iX, iZ, fX, fZ, dX, dZ):
     return points
 
 
+# Fonte: adaptado da versão Java do JavaTPoint
+# https://www.javatpoint.com/computer-graphics-bresenhams-circle-algorithm
 def Circle(cX, cZ, r, nOct, octIni, color=[1, 1, 1], log=False):
     x = 0
     z = r
@@ -254,12 +258,12 @@ def move(direction):
     angle = copy.deepcopy(cYaw)
     distance = 150
 
-    if (direction == "S"):
-        angle += 180
-    elif (direction == "L"):
-        angle -= 90
-    elif (direction == "O"):
+    if (direction == "N"):
+        angle += 270
+    elif (direction == "S"):
         angle += 90
+    elif (direction == "O"):
+        angle += 180
 
     angle = angle % 360
     xT = math.cos(math.radians(angle)) * distance
@@ -272,40 +276,40 @@ def moveBall(direction):
 
     if (cYaw > 45 and cYaw <= 135):
         if (direction == "N"):
-            bZ = between(bZ - 75, -200, 10700)
-        elif (direction == "S"):
-            bZ = between(bZ + 75, -200, 10700)
-        elif (direction == "L"):
             bX = between(bX + 75, -200, 7000)
-        elif (direction == "O"):
+        elif (direction == "S"):
             bX = between(bX - 75, -200, 7000)
+        elif (direction == "L"):
+            bZ = between(bZ + 75, -200, 10700)
+        elif (direction == "O"):
+            bZ = between(bZ - 75, -200, 10700)
     elif (cYaw > 135 and cYaw <= 225):
         if (direction == "N"):
-            bX = between(bX + 75, -200, 7000)
-        elif (direction == "S"):
-            bX = between(bX - 75, -200, 7000)
-        elif (direction == "L"):
             bZ = between(bZ + 75, -200, 10700)
-        elif (direction == "O"):
+        elif (direction == "S"):
             bZ = between(bZ - 75, -200, 10700)
+        elif (direction == "L"):
+            bX = between(bX - 75, -200, 7000)
+        elif (direction == "O"):
+            bX = between(bX + 75, -200, 7000)
     elif (cYaw > 225 and cYaw <= 315):
         if (direction == "N"):
-            bZ = between(bZ + 75, -200, 10700)
-        elif (direction == "S"):
-            bZ = between(bZ - 75, -200, 10700)
-        elif (direction == "L"):
             bX = between(bX - 75, -200, 7000)
-        elif (direction == "O"):
+        elif (direction == "S"):
             bX = between(bX + 75, -200, 7000)
+        elif (direction == "L"):
+            bZ = between(bZ - 75, -200, 10700)
+        elif (direction == "O"):
+            bZ = between(bZ + 75, -200, 10700)
     elif (cYaw > 315 or cYaw <= 45):
         if (direction == "N"):
-            bX = between(bX - 75, -200, 7000)
-        elif (direction == "S"):
-            bX = between(bX + 75, -200, 7000)
-        elif (direction == "L"):
             bZ = between(bZ - 75, -200, 10700)
-        elif (direction == "O"):
+        elif (direction == "S"):
             bZ = between(bZ + 75, -200, 10700)
+        elif (direction == "L"):
+            bX = between(bX + 75, -200, 7000)
+        elif (direction == "O"):
+            bX = between(bX - 75, -200, 7000)
 
 
 def yaw(rate):
@@ -369,6 +373,7 @@ def handleInput(keys):
         moveBall("S")
 
 
+#Fonte: stackoverflow
 def drawText(position, textString, size=24):
     font = pygame.font.Font(None, size)
     textSurface = font.render(
@@ -384,7 +389,7 @@ def main():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    gluPerspective(80, (display[0]/display[1]), 50, 25000)
+    gluPerspective(70, (display[0]/display[1]), 50, 25000)
 
     glTranslatef(-3400, 5250, -15000)
     glRotatef(90, 1, 0, 0)
