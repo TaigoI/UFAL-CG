@@ -2,40 +2,13 @@ import pygame
 import math
 import copy
 from pygame.locals import *
-
+from texture import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
 cYaw, cRoll, cPitch = 0, 0, 90
 bX, bY, bZ = 3400, 40, 5250
 pRed, pBlue = 0, 0
-TexID = 0
-
-class carregaTextura:
-    def __init__(self, path):
-        image = pygame.image.load(path).convert_alpha()
-        if image:
-            image_width, image_height = image.get_rect().size
-            img_data = pygame.image.tostring(image, 'RGBA')
-            self.texture = glGenTextures(1)
-            # glBindTexture(GL_TEXTURE_2D, self.texture)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data)
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-            glGenerateMipmap(GL_TEXTURE_2D)
-        else:
-            print("Falha ao carregar a imagem")
-
-    def apply(self):
-        glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, self.texture)
-
-    def destroy(self):
-        glDeleteTextures(1, self.texture)
 
 verticiesSuperior = (
     (3900,   0, -200),
@@ -59,6 +32,36 @@ verticiesInferior = (
     (2900, 400, 10500),  # 8
 )
 
+verticiesArquibancada1 = (
+    (6800,   0, 100),  # 1
+    (6800, 100, 100),  # 2
+    (7200, 100, 100),  # 3
+    (7200,   0, 100),  # 4
+    (6800,   0, 10500),  # 5
+    (6800, 100, 10500),  # 6
+    (7200,   0, 10500),  # 7
+    (7200, 100, 10500),  # 8
+)
+verticiesArquibancada2 = (
+    (7200,   100, 100),  # 1
+    (7200, 300, 100),  # 2
+    (7600, 300, 100),  # 3
+    (7600,   100, 100),  # 4
+    (7200,   100, 10500),  # 5
+    (7200, 300, 10500),  # 6
+    (7600,   100, 10500),  # 7
+    (7600, 300, 10500),  # 8
+)
+verticiesArquibancada3 = (
+    (7600,   300, 100),  # 1
+    (7600, 500, 100),  # 2
+    (8000, 500, 100),  # 3
+    (8000,   300, 100),  # 4
+    (7600,   300, 10500),  # 5
+    (7600, 500, 10500),  # 6
+    (8000,   300, 10500),  # 7
+    (8000, 500, 10500),  # 8
+)
 edges = (
     (0, 1),
     (0, 3),
@@ -74,6 +77,14 @@ edges = (
     (5, 7)
 )
 
+surfacesArquibancada = (
+    (0,1,2,3),
+    (3,2,7,6),
+    (6,7,5,4),
+    (4,5,1,0),
+    (1,5,7,2),
+    (4,0,3,6)
+)
 
 def Bola():
     global bX, bY, bZ, pRed, pBlue
@@ -100,6 +111,20 @@ def TraveSuperior():
     for edge in edges:
         for vertex in edge:
             glVertex3fv(verticiesSuperior[vertex])
+    glEnd()
+
+def AndarArquibancada(verticiesArquibancada):
+    glBegin(GL_QUADS)
+    for surface in surfacesArquibancada:
+        glColor3fv((1,1,1))
+        for vertex in surface:
+            glVertex3fv(verticiesArquibancada[vertex])
+    glEnd()
+    glBegin(GL_LINES)
+    glColor3f(1, 1, 1)
+    for edge in edges:
+        for vertex in edge:
+            glVertex3fv(verticiesArquibancada[vertex])
     glEnd()
 
 
@@ -237,6 +262,7 @@ def addOctantPoints(cX, cZ, x, z, octantPoints, activeOctants):
 
 def campoVerde():
     glColor3f(0,0.5,0)
+    #glBindTexture(GL_TEXTURE_2D, textId)
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)
     glVertex3f(10, 0, 30)
@@ -246,6 +272,20 @@ def campoVerde():
     glVertex3f(6800, 0, 10500)
     glTexCoord2f(0.0, 1.0)
     glVertex3f(10, 0, 10500)
+    glEnd()
+
+def campoVermelho(textId):
+    glColor3f(1,0,0)
+    glBindTexture(GL_TEXTURE_2D, textId)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3f(10, 0, 30)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3f(6800, 0, 30)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3f(6800, 0, 4000)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3f(10, 0, 4000)
     glEnd()
 def Campo():
     campoVerde()
@@ -257,7 +297,6 @@ def Campo():
     # Meio Campo
     Line(0, 5250, 6800, 5250)
     Circle(3400, 5250, 900, 8, 0)
-
     # Grande Área Superior
     TraveSuperior()
     Circle(3400, 1700, 600, 4, 2)
@@ -272,6 +311,10 @@ def Campo():
 
     # Grande Área Inferior
     TraveInferior()
+    AndarArquibancada(verticiesArquibancada1)
+    AndarArquibancada(verticiesArquibancada2)
+    AndarArquibancada(verticiesArquibancada3)
+
     Circle(3400, 8800, 600, 4, 6)
     Line(1400, 10500, 1400, 8800)
     Line(5400, 10500, 5400, 8800)
@@ -449,7 +492,8 @@ def main():
         glLineWidth(1)
         Campo()
         Bola()
-        tex = carregaTextura("Textures/campo.png")
+        tex1 = carregaTextura("Textures/campo.png", 1)
+
         drawText((-100, 2500, -100),
                  f"Roll: {cRoll}, Pitch: {cPitch}, Yaw: {cYaw}", 16)
         drawText((-100, 1500, -100),
