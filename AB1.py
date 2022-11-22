@@ -9,6 +9,33 @@ from OpenGL.GLU import *
 cYaw, cRoll, cPitch = 0, 0, 90
 bX, bY, bZ = 3400, 40, 5250
 pRed, pBlue = 0, 0
+TexID = 0
+
+class carregaTextura:
+    def __init__(self, path):
+        image = pygame.image.load(path).convert_alpha()
+        if image:
+            image_width, image_height = image.get_rect().size
+            img_data = pygame.image.tostring(image, 'RGBA')
+            self.texture = glGenTextures(1)
+            # glBindTexture(GL_TEXTURE_2D, self.texture)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data)
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+            glGenerateMipmap(GL_TEXTURE_2D)
+        else:
+            print("Falha ao carregar a imagem")
+
+    def apply(self):
+        glActiveTexture(GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, self.texture)
+
+    def destroy(self):
+        glDeleteTextures(1, self.texture)
 
 verticiesSuperior = (
     (3900,   0, -200),
@@ -90,7 +117,6 @@ def TraveInferior():
 def Line(iX, iZ, fX, fZ, color=[1, 1, 1], log=False):
     glBegin(GL_LINES)
     glColor(color)
-
     dX = abs(fX - iX)
     dZ = abs(fZ - iZ)
     if (dX == 0 or dZ == 0):
@@ -209,13 +235,25 @@ def addOctantPoints(cX, cZ, x, z, octantPoints, activeOctants):
     return octantPoints
 
 
+def campoVerde():
+    glColor3f(0,0.5,0)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3f(10, 0, 30)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3f(6800, 0, 30)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3f(6800, 0, 10500)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3f(10, 0, 10500)
+    glEnd()
 def Campo():
+    campoVerde()
     # Limite Maior
     Line(0, 0, 0, 10500)
     Line(0, 10500, 6800, 10500)
     Line(6800, 10500, 6800, 0)
     Line(6800, 0, 0, 0)
-
     # Meio Campo
     Line(0, 5250, 6800, 5250)
     Circle(3400, 5250, 900, 8, 0)
@@ -384,6 +422,7 @@ def drawText(position, textString, size=24):
                  GL_RGBA, GL_UNSIGNED_BYTE, textData)
 
 
+
 def main():
     pygame.init()
     display = (800, 600)
@@ -393,6 +432,9 @@ def main():
 
     glTranslatef(-3400, 5250, -15000)
     glRotatef(90, 1, 0, 0)
+
+    glEnable(GL_TEXTURE_2D)
+    #glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND)
 
     while True:
         for event in pygame.event.get():
@@ -405,9 +447,9 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLineWidth(1)
-
         Campo()
         Bola()
+        tex = carregaTextura("Textures/campo.png")
         drawText((-100, 2500, -100),
                  f"Roll: {cRoll}, Pitch: {cPitch}, Yaw: {cYaw}", 16)
         drawText((-100, 1500, -100),
@@ -420,3 +462,4 @@ def main():
 
 
 main()
+
