@@ -3,65 +3,15 @@ import math
 import copy
 from pygame.locals import *
 from texture import *
+from vertices import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-
 cYaw, cRoll, cPitch = 0, 0, 90
 bX, bY, bZ = 3400, 40, 5250
 pRed, pBlue = 0, 0
+Texturas = carregaTextura()
+Texturas = []
 
-verticiesSuperior = (
-    (3900,   0, -200),
-    (3900, 400, -100),
-    (2900, 400, -100),
-    (2900,   0, -200),
-    (3900,   0,    0),
-    (3900, 400,    0),
-    (2900,   0,    0),
-    (2900, 400,    0),
-)
-
-verticiesInferior = (
-    (3900,   0, 10700),  # 1
-    (3900, 400, 10600),  # 2
-    (2900, 400, 10600),  # 3
-    (2900,   0, 10700),  # 4
-    (3900,   0, 10500),  # 5
-    (3900, 400, 10500),  # 6
-    (2900,   0, 10500),  # 7
-    (2900, 400, 10500),  # 8
-)
-
-verticiesArquibancada1 = (
-    (6800,   0, 100),  # 1
-    (6800, 100, 100),  # 2
-    (7200, 100, 100),  # 3
-    (7200,   0, 100),  # 4
-    (6800,   0, 10500),  # 5
-    (6800, 100, 10500),  # 6
-    (7200,   0, 10500),  # 7
-    (7200, 100, 10500),  # 8
-)
-verticiesArquibancada2 = (
-    (7200,   100, 100),  # 1
-    (7200, 300, 100),  # 2
-    (7600, 300, 100),  # 3
-    (7600,   100, 100),  # 4
-    (7200,   100, 10500),  # 5
-    (7200, 300, 10500),  # 6
-    (7600,   100, 10500),  # 7
-    (7600, 300, 10500),  # 8
-)
-verticiesArquibancada3 = (
-    (7600,   300, 100),  # 1
-    (7600, 500, 100),  # 2
-    (8000, 500, 100),  # 3
-    (8000,   300, 100),  # 4
-    (7600,   300, 10500),  # 5
-    (7600, 500, 10500),  # 6
-    (8000,   300, 10500),  # 7
-    (8000, 500, 10500),  # 8
-)
 edges = (
     (0, 1),
     (0, 3),
@@ -76,6 +26,7 @@ edges = (
     (5, 4),
     (5, 7)
 )
+
 
 surfacesArquibancada = (
     (0,1,2,3),
@@ -113,20 +64,73 @@ def TraveSuperior():
             glVertex3fv(verticiesSuperior[vertex])
     glEnd()
 
-def AndarArquibancada(verticiesArquibancada):
+def AndarArquibancada(verticiesArquibancada, textura):
+    textura.Bind()
+    glColor3f(0,0.5,0)
     glBegin(GL_QUADS)
-    for surface in surfacesArquibancada:
-        glColor3fv((1,1,1))
-        for vertex in surface:
-            glVertex3fv(verticiesArquibancada[vertex])
-    glEnd()
-    glBegin(GL_LINES)
-    glColor3f(1, 1, 1)
-    for edge in edges:
-        for vertex in edge:
-            glVertex3fv(verticiesArquibancada[vertex])
-    glEnd()
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesArquibancada[7])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesArquibancada[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesArquibancada[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesArquibancada[5])
 
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesArquibancada[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesArquibancada[7])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesArquibancada[5])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesArquibancada[4])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesArquibancada[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesArquibancada[3])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesArquibancada[0])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesArquibancada[4])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesArquibancada[3])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesArquibancada[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesArquibancada[7])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesArquibancada[6])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesArquibancada[0])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesArquibancada[1])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesArquibancada[2])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesArquibancada[3])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesArquibancada[4])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesArquibancada[5])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesArquibancada[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesArquibancada[0])
+
+    glEnd()
+    textura.UnBind()
+    # glBegin(GL_LINES)
+    # glColor3f(1, 1, 1)
+    # for edge in edges:
+    #     for vertex in edge:
+
+    #         glVertex3fv(verticiesArquibancada[vertex])
+    # glEnd()
 
 def TraveInferior():
     glBegin(GL_LINES)
@@ -259,10 +263,24 @@ def addOctantPoints(cX, cZ, x, z, octantPoints, activeOctants):
         octantPoints[7].append([cX-x, cZ-z])  # 7
     return octantPoints
 
-
-def campoVerde():
+def PistaAtletismo(vertices,textura):
+    textura.Bind()
     glColor3f(0,0.5,0)
-    #glBindTexture(GL_TEXTURE_2D, textId)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(vertices[0])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(vertices[1])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(vertices[2])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(vertices[3])
+    glEnd()
+    textura.UnBind()
+
+def campoVerde(textura):
+    textura.Bind()
+    glColor3f(0,0.5,0)
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)
     glVertex3f(10, 0, 30)
@@ -273,22 +291,14 @@ def campoVerde():
     glTexCoord2f(0.0, 1.0)
     glVertex3f(10, 0, 10500)
     glEnd()
+    textura.UnBind()
 
-def campoVermelho(textId):
-    glColor3f(1,0,0)
-    glBindTexture(GL_TEXTURE_2D, textId)
-    glBegin(GL_QUADS)
-    glTexCoord2f(0.0, 0.0)
-    glVertex3f(10, 0, 30)
-    glTexCoord2f(1.0, 0.0)
-    glVertex3f(6800, 0, 30)
-    glTexCoord2f(1.0, 1.0)
-    glVertex3f(6800, 0, 4000)
-    glTexCoord2f(0.0, 1.0)
-    glVertex3f(10, 0, 4000)
-    glEnd()
+
+
 def Campo():
-    campoVerde()
+    texCampo = Texturas[0]
+    campoVerde(texCampo)
+
     # Limite Maior
     Line(0, 0, 0, 10500)
     Line(0, 10500, 6800, 10500)
@@ -311,9 +321,6 @@ def Campo():
 
     # Grande Área Inferior
     TraveInferior()
-    AndarArquibancada(verticiesArquibancada1)
-    AndarArquibancada(verticiesArquibancada2)
-    AndarArquibancada(verticiesArquibancada3)
 
     Circle(3400, 8800, 600, 4, 6)
     Line(1400, 10500, 1400, 8800)
@@ -333,7 +340,12 @@ def Campo():
     Circle(6800, 0, 300, 2, 4)
     Circle(6800, 10500, 300, 2, 6)
 
-
+    texArq = Texturas[1]
+    for arq in verticesArquibancada:
+        AndarArquibancada(arq, texArq)
+    texPista = Texturas[2]
+    for pis in verticesPista:
+        PistaAtletismo(pis, texPista)
 def move(direction):
     global cYaw
     angle = copy.deepcopy(cYaw)
@@ -477,8 +489,16 @@ def main():
     glRotatef(90, 1, 0, 0)
 
     glEnable(GL_TEXTURE_2D)
-    #glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND)
-
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
+    a = carregaTextura()
+    b = carregaTextura()
+    c = carregaTextura()
+    a.Load('Textures/campo.png')
+    b.Load('Textures/concreto.jpg')
+    c.Load('Textures/pista.jpg')
+    Texturas.append(a)
+    Texturas.append(b)
+    Texturas.append(c)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -492,7 +512,6 @@ def main():
         glLineWidth(1)
         Campo()
         Bola()
-        tex1 = carregaTextura("Textures/campo.png", 1)
 
         drawText((-100, 2500, -100),
                  f"Roll: {cRoll}, Pitch: {cPitch}, Yaw: {cYaw}", 16)

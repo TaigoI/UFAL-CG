@@ -2,12 +2,18 @@ import pygame
 from OpenGL.GL import *
 
 class carregaTextura:
-    def __init__(self, path, textId):
-        self.textId = textId
-        image = pygame.image.load(path).convert_alpha()
+    def __init__(self):
+        self.textId = 0
+    def Load(self,path):
+        self.path = path
+
+        image = pygame.image.load(self.path).convert_alpha()
         if image:
             image_width, image_height = image.get_rect().size
             img_data = pygame.image.tostring(image, 'RGBA')
+            print(path)
+            #glGenTextures(1, id(self.textId))
+            #glBindTexture(GL_TEXTURE_2D, self.textId)
             self.texture = glGenTextures(1)
             glBindTexture(GL_TEXTURE_2D, self.texture)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data)
@@ -17,13 +23,15 @@ class carregaTextura:
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+            glBindTexture(GL_TEXTURE_2D, 0)
             glGenerateMipmap(GL_TEXTURE_2D)
         else:
             print("Falha ao carregar a imagem")
-
-    def apply(self):
+    def Bind(self):
         glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, self.texture)
+    def UnBind(self):
+        glBindTexture(GL_TEXTURE_2D, 0)
 
     def destroy(self):
         glDeleteTextures(1, self.texture)
