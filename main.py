@@ -56,9 +56,69 @@ def Bola():
     glPopMatrix()
 
 
-def TraveSuperior():
+def TraveSuperior(textura):
+    textura.Bind()
+    glColor3fv((1,0,0))
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesSuperior[7])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesSuperior[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesSuperior[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesSuperior[5])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesSuperior[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesSuperior[7])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesSuperior[5])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesSuperior[4])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesSuperior[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesSuperior[3])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesSuperior[0])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesSuperior[4])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesSuperior[3])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesSuperior[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesSuperior[7])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesSuperior[6])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesSuperior[0])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesSuperior[1])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesSuperior[2])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesSuperior[3])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesSuperior[4])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesSuperior[5])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesSuperior[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesSuperior[0])
+
+    glEnd()
+    textura.UnBind()
+
     glBegin(GL_LINES)
-    glColor3f(1, 0, 0)
+    glColor3f(1, 0 , 0)
     for edge in edges:
         for vertex in edge:
             glVertex3fv(verticiesSuperior[vertex])
@@ -66,7 +126,6 @@ def TraveSuperior():
 
 def AndarArquibancada(verticiesArquibancada, textura):
     textura.Bind()
-    glColor3f(0,0.5,0)
     glBegin(GL_QUADS)
     glTexCoord2f(0.0, 0.0)
     glVertex3fv(verticiesArquibancada[7])
@@ -124,15 +183,67 @@ def AndarArquibancada(verticiesArquibancada, textura):
 
     glEnd()
     textura.UnBind()
-    # glBegin(GL_LINES)
-    # glColor3f(1, 1, 1)
-    # for edge in edges:
-    #     for vertex in edge:
+    
+def TraveInferior(textura):
+    textura.Bind()
+    glColor3fv((1,0,0))
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesInferior[7])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesInferior[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesInferior[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesInferior[5])
 
-    #         glVertex3fv(verticiesArquibancada[vertex])
-    # glEnd()
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesInferior[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesInferior[7])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesInferior[5])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesInferior[4])
 
-def TraveInferior():
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesInferior[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesInferior[3])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesInferior[0])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesInferior[4])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesInferior[3])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesInferior[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesInferior[7])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesInferior[6])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesInferior[0])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesInferior[1])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesInferior[2])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesInferior[3])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(verticiesInferior[4])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(verticiesInferior[5])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(verticiesInferior[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(verticiesInferior[0])
+
+    glEnd()
+    textura.UnBind()
     glBegin(GL_LINES)
     glColor3f(0, 0, 1)
     for edge in edges:
@@ -140,6 +251,65 @@ def TraveInferior():
             glVertex3fv(verticiesInferior[vertex])
     glEnd()
 
+def posteLuz(poste,textura):
+    textura.Bind()
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(poste[7])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(poste[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(poste[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(poste[5])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(poste[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(poste[7])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(poste[5])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(poste[4])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(poste[6])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(poste[3])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(poste[0])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(poste[4])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(poste[3])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(poste[2])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(poste[7])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(poste[6])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(poste[0])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(poste[1])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(poste[2])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(poste[3])
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(poste[4])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(poste[5])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(poste[1])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(poste[0])
+
+    glEnd()
+    textura.UnBind()
 
 # Fonte: adaptado do RogueBasin
 # http://www.roguebasin.com/index.php/Bresenham%27s_Line_Algorithm#Python
@@ -278,6 +448,21 @@ def PistaAtletismo(vertices,textura):
     glEnd()
     textura.UnBind()
 
+def placaLuz(vertices,textura):
+    textura.Bind()
+    glColor3f(0,0.5,0)
+    glBegin(GL_QUADS)
+    glTexCoord2f(0.0, 0.0)
+    glVertex3fv(vertices[0])
+    glTexCoord2f(1.0, 0.0)
+    glVertex3fv(vertices[1])
+    glTexCoord2f(1.0, 1.0)
+    glVertex3fv(vertices[2])
+    glTexCoord2f(0.0, 1.0)
+    glVertex3fv(vertices[3])
+    glEnd()
+    textura.UnBind()
+
 def campoVerde(textura):
     textura.Bind()
     glColor3f(0,0.5,0)
@@ -298,7 +483,6 @@ def campoVerde(textura):
 def Campo():
     texCampo = Texturas[0]
     campoVerde(texCampo)
-
     # Limite Maior
     Line(0, 0, 0, 10500)
     Line(0, 10500, 6800, 10500)
@@ -308,7 +492,6 @@ def Campo():
     Line(0, 5250, 6800, 5250)
     Circle(3400, 5250, 900, 8, 0)
     # Grande Área Superior
-    TraveSuperior()
     Circle(3400, 1700, 600, 4, 2)
     Line(1400, 0, 1400, 1700)
     Line(5400, 0, 5400, 1700)
@@ -320,7 +503,6 @@ def Campo():
     Line(2500, 600, 4300, 600)
 
     # Grande Área Inferior
-    TraveInferior()
 
     Circle(3400, 8800, 600, 4, 6)
     Line(1400, 10500, 1400, 8800)
@@ -339,13 +521,22 @@ def Campo():
     Circle(0, 10500, 300, 2, 0)
     Circle(6800, 0, 300, 2, 4)
     Circle(6800, 10500, 300, 2, 6)
-
+    
     texArq = Texturas[1]
     for arq in verticesArquibancada:
         AndarArquibancada(arq, texArq)
     texPista = Texturas[2]
     for pis in verticesPista:
         PistaAtletismo(pis, texPista)
+    texTrave = Texturas[3]
+    TraveSuperior(texTrave)
+    TraveInferior(texTrave)
+    texEstrutura = Texturas[4]
+    for pos in verticesPoste:
+        posteLuz(pos,texEstrutura)
+    texLuz = Texturas[5]
+    for luz in verticesLuz:
+        placaLuz(luz, texLuz)
 def move(direction):
     global cYaw
     angle = copy.deepcopy(cYaw)
@@ -477,6 +668,29 @@ def drawText(position, textString, size=24):
                  GL_RGBA, GL_UNSIGNED_BYTE, textData)
 
 
+def texturasCarregadas():
+    campo = carregaTextura()
+    concreto = carregaTextura()
+    pista = carregaTextura()
+    rede = carregaTextura()
+    estrutura = carregaTextura()
+    luz = carregaTextura()
+
+    campo.Load('Textures/campo.png')
+    concreto.Load('Textures/concreto.jpg')
+    pista.Load('Textures/pista.jpg')
+    rede.Load('Textures/rede.jpg')
+    estrutura.Load('Textures/estrutura1.jpg')
+    luz.Load('Textures/luzes1.png')
+
+    Texturas.append(campo)
+    Texturas.append(concreto)
+    Texturas.append(pista)
+    Texturas.append(rede)
+    Texturas.append(estrutura)
+    Texturas.append(luz)
+
+
 
 def main():
     pygame.init()
@@ -490,15 +704,8 @@ def main():
 
     glEnable(GL_TEXTURE_2D)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
-    a = carregaTextura()
-    b = carregaTextura()
-    c = carregaTextura()
-    a.Load('Textures/campo.png')
-    b.Load('Textures/concreto.jpg')
-    c.Load('Textures/pista.jpg')
-    Texturas.append(a)
-    Texturas.append(b)
-    Texturas.append(c)
+    
+    texturasCarregadas()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

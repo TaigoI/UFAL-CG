@@ -23,12 +23,12 @@ verticiesInferior = (
 PistaDireita = (
     (7200,   0, 10500),  # 7
     (7200, 0, 0),  # 2
-    (6800,   0, 0),  # 1
-    (6800,   0, 10500),  # 5
+    (6830,   0, 0),  # 1
+    (6830,   0, 10500),  # 5
 )
 PistaEsquerda = (
-    (0,   0, 10500),  # 7
-    (0, 0, 0),  # 2
+    (-30,   0, 10500),  # 7
+    (-30, 0, 0),  # 2
     (-400,   0, 0),  # 1
     (-400,   0, 10500),  # 5
 )
@@ -262,6 +262,82 @@ BaixoArquiVex5 = (
     (6800, 500, 11700),  # 8
 )
 
+PosteInfDir = (
+    (6830,   0, 10500),  # 1
+    (6830, 1000, 10500),  # 2
+    (6900, 1000, 10500),  # 3
+    (6900,   0, 10500),  # 4
+    (6830,   0, 10600),  # 5
+    (6830, 1000, 10600),  # 6
+    (6900,   0, 10600),  # 7
+    (6900, 1000, 10600),  # 8
+)
+
+PosteInfEsq = (
+    (-30,   0, 10500),  # 1
+    (-30, 1000, 10500),  # 2
+    (-100, 1000, 10500),  # 3
+    (-100,   0, 10500),  # 4
+    (-30,   0, 10600),  # 5
+    (-30, 1000, 10600),  # 6
+    (-100,   0, 10600),  # 7
+    (-100, 1000, 10600),  # 8
+)
+
+PosteSupEsq = (
+    (-30,   0, 0),  # 1
+    (-30, 1000, 0),  # 2
+    (-100, 1000, 0),  # 3
+    (-100,   0, 0),  # 4
+    (-30,   0, 100),  # 5
+    (-30, 1000, 100),  # 6
+    (-100,   0, 100),  # 7
+    (-100, 1000, 100),  # 8
+)
+
+PosteSupDir = (
+    (6830,   0, 0),  # 1
+    (6830, 1000, 0),  # 2
+    (6900, 1000, 0),  # 3
+    (6900,   0, 0),  # 4
+    (6830,   0, 100),  # 5
+    (6830, 1000, 100),  # 6
+    (6900,   0, 100),  # 7
+    (6900, 1000, 100),  # 8
+)
+
+LuzSupDir = (
+    (7200,   700, 200),  # 5
+    (7200, 1000, 200),  # 6
+    (6700, 1000, -200),  # 2
+    (6700,   700, -200),  # 1
+)
+
+LuzSupEsq = (
+    (-250,   700, 200),  # 5 
+    (-250, 1000, 200),  # 3
+    (250, 1000, -200),  # 8
+    (250,   700, -200),  # 7
+)
+
+LuzInfEsq = (
+    (-250,   700, 10400),  # 5
+    (-250, 1000, 10400),  # 6
+    (250, 1000, 10800),  # 2
+    (250,   700, 10800),  # 1
+)
+
+LuzInfDir = (
+    (7200,   700, 10400),  # 5
+    (7200, 1000, 10400),  # 6
+    (6700, 1000, 10800),  # 2
+    (6700,   700, 10800),  # 1
+)
+
 verticesArquibancada = [DirArquiVex1, DirArquiVex2, DirArquiVex3, DirArquiVex4,DirArquiVex5,EsqArquiVex1,EsqArquiVex2,EsqArquiVex3
                         ,EsqArquiVex4,EsqArquiVex5,CimaArquiVex1,CimaArquiVex2,CimaArquiVex3,CimaArquiVex4,CimaArquiVex5,BaixoArquiVex1,BaixoArquiVex2,BaixoArquiVex3,BaixoArquiVex4,BaixoArquiVex5]
 verticesPista = [PistaDireita ,PistaEsquerda,PistaCima,PistaBaixo]
+
+verticesPoste = [PosteInfDir,PosteInfEsq,PosteSupEsq,PosteSupDir]
+
+verticesLuz = [LuzSupDir, LuzSupEsq,LuzInfEsq,LuzInfDir ]
