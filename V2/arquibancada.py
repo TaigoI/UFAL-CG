@@ -7,7 +7,7 @@ class Arquibancadas:
     lDelta = 2
     wDelta = 0.90
     hDelta = 1.0
-    nRows = 12
+    nRows = 20
 
     def __init__(self, texture):
         self.Norte(texture)

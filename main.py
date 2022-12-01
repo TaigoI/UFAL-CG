@@ -678,7 +678,7 @@ def texturasCarregadas():
 
     campo.Load('Textures/campo.png')
     concreto.Load('Textures/concreto.jpg')
-    pista.Load('Textures/pista.jpg')
+    pista.Load('Textures/areia.jpg')
     rede.Load('Textures/rede.jpg')
     estrutura.Load('Textures/estrutura1.jpg')
     luz.Load('Textures/luzes1.png')
@@ -701,6 +701,10 @@ def main():
 
     glTranslatef(-3400, 5250, -15000)
     glRotatef(90, 1, 0, 0)
+
+    glLight(GL_LIGHT0, GL_POSITION, (5, 5, 5, 1))
+    glLightfv(GL_LIGHT0, GL_AMBIENT, (0, 0, 0, 1))
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, (1, 1, 1, 1))
 
     glEnable(GL_TEXTURE_2D)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)

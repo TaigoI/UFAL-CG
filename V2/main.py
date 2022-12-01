@@ -16,6 +16,16 @@ import motion
 ballSpeed = 1.5
 
 
+def drawText(position, textString, size=24):
+    font = pygame.font.Font(None, size)
+    textSurface = font.render(
+        textString, True, (255, 255, 255, 255), (0, 0, 0, 255))
+    textData = pygame.image.tostring(textSurface, "RGBA", True)
+    glRasterPos3d(*position)
+    glDrawPixels(textSurface.get_width(), textSurface.get_height(),
+                 GL_RGBA, GL_UNSIGNED_BYTE, textData)
+
+
 def updateGame(keys, ballPosition, pRed, pBlue):
     bX, bY, bZ = ballPosition
 
@@ -31,10 +41,10 @@ def updateGame(keys, ballPosition, pRed, pBlue):
     if (bX >= 30 and bX <= 38):
         if (bZ >= -1.5 and bZ <= 0):
             pBlue += 1
-            bX, bZ = 34, 52.5
+            bX, bZ = 34, 55
         elif (bZ >= 110 and bZ <= 111.5):
             pRed += 1
-            bX, bZ = 34, 52.5
+            bX, bZ = 34, 55
     return ((bX, bY, bZ), pRed, pBlue)
 
 
@@ -58,15 +68,15 @@ def main():
     glEnable(GL_DEPTH_TEST)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE)
 
-    textDeserto = Texture("assets/areia.jpg", 100)
-    textCeu = Texture("assets/ceu.jpg", 0.01)
+    textDeserto = Texture("./areia.jpg", 100)
+    textCeu = Texture("./ceu.jpg", 0.01)
 
-    textArq = Texture("assets/concreto.jpg", 0.2)
-    textCampo = Texture("assets/campo.png", 0.05)
-    textBola = Texture("assets/bola.jpg", 0.5)
-    textRede = Texture("assets/rede.jpg", 0.5)
+    textArq = Texture("./concreto.jpg", 0.2)
+    textCampo = Texture("./campo.png", 0.05)
+    textBola = Texture("./bola.jpg", 0.5)
+    textRede = Texture("./rede.jpg", 0.5)
 
-    ballPosition = (34, 1, 60)
+    ballPosition = (34, 1, 55)
     pRed = 0
     pBlue = 0
 
@@ -84,21 +94,22 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        # glDisable(GL_DEPTH_TEST)
+        glDisable(GL_DEPTH_TEST)
         Object(textDeserto, (600, 1, 400), (-300, -1, -200), 0.1)
         Object(textCeu, (600, 300, 0.1), (-300, -1, -200), 0.1)
         Object(textCeu, (600, 300, 0.1), (-300, -1, 200), 0.1)
         Object(textCeu, (0.1, 300, 400), (-300, -1, -200), 0.1)
         Object(textCeu, (0.1, 300, 400), (300, -1, -200), 0.1)
         Object(textCeu, (600, 1, 400), (-300, 300, -200), 0.1)
-        # glEnable(GL_DEPTH_TEST)
+        glEnable(GL_DEPTH_TEST)
+
+        Campo(textCampo)
 
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
         glEnable(GL_COLOR_MATERIAL)
         glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE)
 
-        Campo(textCampo)
         Arquibancadas(textArq)
         Traves(textRede)
 
@@ -109,6 +120,9 @@ def main():
         glDisable(GL_LIGHT0)
         glDisable(GL_LIGHTING)
         glDisable(GL_COLOR_MATERIAL)
+
+        drawText((-1, 15, -1), f"bX: {ballPosition[0]}, bZ: {ballPosition[2]}", 16)
+        drawText((17, 30, -5), f"VER {pRed}x{pBlue} AZL", 24)
 
         pygame.display.flip()
 
